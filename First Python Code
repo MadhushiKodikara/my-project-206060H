@@ -319,7 +319,7 @@ y_pred=classifier.predict(df_Test)
 y_pred
 
 
-# In[56]:
+C In[56]:
 
 
 ##Create Sample Submission file and Submit using ANN
@@ -328,6 +328,43 @@ sub_df=pd.read_csv('D:/UOM_3rd_Year/Semester 6/Data mining/Kaggle Competition/ho
 datasets=pd.concat([sub_df['Id'],pred],axis=1)
 datasets.columns=['Id','SalePrice']
 datasets.to_csv('D:/UOM_3rd_Year/Semester 6/Data mining/Kaggle Competition/house-prices-advanced-regression-techniques/sample_submission.csv',index=False)
+
+###Prediciton and selecting the Algorithm
+
+import xgboost
+classifier=xgboost.XGBRegressor()
+import xgboost
+regressor=xgboost.XGBRegressor()
+booster=['gbtree','gblinear']
+base_score=[0.25,0.5,0.75,1]
+## Hyper Parameter Optimization
+
+
+n_estimators = [100, 500, 900, 1100, 1500]
+max_depth = [2, 3, 5, 10, 15]
+booster=['gbtree','gblinear']
+learning_rate=[0.05,0.1,0.15,0.20]
+min_child_weight=[1,2,3,4]
+
+# Define the grid of hyperparameters to search
+hyperparameter_grid = {
+    'n_estimators': n_estimators,
+    'max_depth':max_depth,
+    'learning_rate':learning_rate,
+    'min_child_weight':min_child_weight
+    'booster':booster,
+    'base_score':base_score
+    }
+# Set up the random search with 4-fold cross validation
+random_cv = RandomizedSearchCV(estimator=regressor,
+            param_distributions=hyperparameter_grid,
+            cv=5, n_iter=50,
+            scoring = 'neg_mean_absolute_error',n_jobs = 4,
+            verbose = 5, 
+            return_train_score = True,
+            random_state=42)
+
+random_cv.fit(X_train,y_train)
 
 
 
